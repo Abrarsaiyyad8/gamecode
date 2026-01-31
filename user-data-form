@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus Containment | Sector India</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff41; 
+            overflow: hidden;
+            background-color: #050505;
+        }
+
+        /* Zombie Counter Header */
+        #counter-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(139, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 12px 0;
+            font-weight: bold;
+            z-index: 10;
+            border-bottom: 2px solid #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        #count { color: #00ff41; font-size: 1.3em; }
+
+        /* Background Container */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, #4d0000 0%, #000 100%);
+        }
+
+        /* Particle/Effect Elements */
+        .effect {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+            animation: explode 0.8s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        /* Glitch Effect */
+        .glitch-active {
+            animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+            filter: invert(1) hue-rotate(90deg);
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .virus-layer {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.2;
+        }
+
+        /* Form Styling */
+        .form-overlay {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            padding: 30px;
+            border-radius: 5px;
+            width: 350px;
+            margin: 140px auto;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            position: relative;
+            z-index: 8;
+        }
+
+        h2 { text-align: center; color: #ff0000; text-transform: uppercase; letter-spacing: 2px; }
+
+        label { display: block; margin-top: 15px; font-size: 0.9em; font-weight: bold; }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #0a0a0a;
+            border: 1px solid #ff0000;
+            color: #00ff41;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            background: #ff0000;
+            color: black;
+            font-weight: bolder;
+            cursor: pointer;
+            margin-top: 20px;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        button:hover { background: #00ff41; box-shadow: 0 0 20px #00ff41; }
+
+    </style>
+</head>
+<body id="main-body">
+
+    <div id="counter-header">
+        ⚠️ SYSTEM BREACH: ZOMBIES DETECTED: <span id="count">48,201</span>
+    </div>
+
+    <div id="bg" class="bg-container">
+        <div class="virus-layer"></div>
+    </div>
+
+    <div class="form-overlay">
+        <h2>Enter Zone</h2>
+        <form action="#">
+            <label>In-Game Alias</label>
+            <input type="text" placeholder="Survivor Name" required>
+
+            <label>Survival Email</label>
+            <input type="email" placeholder="name@outbreak.com" required>
+
+            <label>Containment Zone</label>
+            <select required>
+                <option value="" disabled selected>Select City</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="pune">Pune</option>
+                <option value="delhi">Delhi</option>
+                <option value="nagpur">Nagpur</option>
+            </select>
+
+            <button type="submit">START</button>
+        </form>
+    </div>
+
+    <script>
+        let zombieCount = 48201;
+        const countDisplay = document.getElementById('count');
+        const bg = document.getElementById('bg');
+        const body = document.getElementById('main-body');
+
+        function createBurst() {
+            // Create 5 particles per tick
+            for(let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'effect';
+                
+                // Randomly choose between Blood (red) and Fire (orange/yellow)
+                const isFire = Math.random() > 0.5;
+                particle.style.backgroundColor = isFire ? `rgb(255, ${Math.random()*100}, 0)` : '#8b0000';
+                particle.style.boxShadow = isFire ? '0 0 15px #ff4500' : '0 0 10px #ff0000';
+                
+                // Random Size
+                const size = Math.random() * 40 + 10;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Random Position
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+                
+                body.appendChild(particle);
+                
+                // Remove from DOM after animation finishes
+                setTimeout(() => { particle.remove(); }, 800);
+            }
+        }
+
+        setInterval(() => {
+            // Update Count
+            zombieCount += Math.floor(Math.random() * 8) + 1;
+            countDisplay.innerText = zombieCount.toLocaleString();
+
+            // Trigger Visuals
+            createBurst();
+            bg.classList.add('glitch-active');
+            
+            setTimeout(() => {
+                bg.classList.remove('glitch-active');
+            }, 200);
+            
+        }, 1500);
+    </script>
+
+</body>
+</html>
